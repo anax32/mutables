@@ -1,5 +1,8 @@
 #include "png.h"
 
+#include <iostream>
+#include <fstream>
+
 #ifdef _WIN32
 #include <fcntl.h>
 #include <io.h>

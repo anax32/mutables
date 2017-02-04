@@ -1,3 +1,7 @@
+#include "gl/texture.h"
+
+#include <fstream>
+
 namespace gl
 {
 	namespace texture
@@ -99,13 +103,13 @@ namespace gl
 			}
 			void run_all()
 			{
-				gl::context::create(NULL);
+				gl::context::create();
 
 				create_test();
 				write_test();
 				write_file_test();
 
-				gl::context::clean(NULL);
+				gl::context::clean();
 			}
 		}
 	}

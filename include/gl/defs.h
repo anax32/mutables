@@ -80,7 +80,9 @@ namespace gl
 	}
 };
 
+/*
 #include <context.h>
 #include <texture.h>
 #include <framebuffer.h>
 #include <shader.h>
+*/

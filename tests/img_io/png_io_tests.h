@@ -1,9 +1,11 @@
 #include <sstream>
 #include <cassert>
 
+#include "img_io/png_io.h"
+
 namespace png_io
 {
-	namespace tests
+	namespace test
 	{
 		void write_to_stream_test()
 		{
@@ -42,10 +44,10 @@ namespace png_io
 
 			png_io::read_from_stream(ss, exp_w, exp_h, exp_c, exp_bd, &exp_buf);
 
-			assert(exp_w, w);
-			assert(exp_h, h);
-			assert(exp_c, c);
-			assert(exp_bd, 8);
+			assert(exp_w == w);
+			assert(exp_h == h);
+			assert(exp_c == c);
+			assert(exp_bd == 8);
 
 			assert(memcmp(img_buf, exp_buf, 64) == 0);
 
@@ -61,10 +63,10 @@ namespace png_io
 			ss << image;
 			ss >> result;
 
-			assert(result.width, image.width);
-			assert(result.height, image.height);
-			assert(result.channels, image.channels);
-			assert(result.bit_depth, 8);
+			assert(result.width == image.width);
+			assert(result.height == image.height);
+			assert(result.channels == image.channels);
+			assert(result.bit_depth == 8);
 
 			assert(memcmp(result.buf, image.buf, 64) == 0);
 
@@ -100,10 +102,10 @@ namespace png_io
 
 			assert(png_io::read(fname, result) == true);
 
-			assert(result.width, image.width);
-			assert(result.height, image.height);
-			assert(result.channels, image.channels);
-			assert(result.bit_depth, 8);
+			assert(result.width == image.width);
+			assert(result.height == image.height);
+			assert(result.channels == image.channels);
+			assert(result.bit_depth == 8);
 
 			assert(memcmp(result.buf, image.buf, 64) == 0);
 

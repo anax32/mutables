@@ -167,7 +167,7 @@ namespace gl
 #elif __linux__
 		bool create(Display *display = NULL)
 		{
-			int win_attrs[] = { GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+			int visual_attrs[] = { GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
 				GLX_RENDER_TYPE, GLX_RGBA_BIT,
 				GLX_X_VISUAL_TYPE, GLX_TRUE_COLOR,
 				GLX_RED_SIZE, 8,
@@ -178,6 +178,7 @@ namespace gl
 				GLX_STENCIL_SIZE, 8,
 				GLX_DOUBLEBUFFER, True,
 				None };
+			int win_attrs[] = {GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None};
 			XVisualInfo             *vi = NULL;
 			GLXFBConfig				*fbc = NULL;
 			int 					fbcCount = 0;
@@ -191,17 +192,14 @@ namespace gl
 				return false;
 			}
 
-			if ((vi = glXChooseVisual(display, DefaultScreen(display), win_attrs)) == NULL)
-			{
-				std::cerr << "ERR: no appropriate visual found\0" << std::endl;
-				return false;
-			}
-
-			if ((fbc = glXChooseFBConfig(display, DefaultScreen(display), win_attrs, &fbcCount)) == NULL)
+			if ((fbc = glXChooseFBConfig(display, DefaultScreen(display), visual_attrs, &fbcCount)) == NULL)
 			{
 				std::cerr << "ERR: Could not retrieve framebuffer config\0" << std::endl;
 				return false;
 			}
+
+			// get the visual from the framebuffer config
+			vi = glXGetVisualFromFBConfig(display, fbc[0]);
 
 			swa.colormap = XCreateColormap(display, DefaultRootWindow(display), vi->visual, AllocNone);
 			swa.event_mask = ExposureMask | KeyPressMask;
@@ -224,14 +222,13 @@ namespace gl
 #ifdef OPENGL_DEBUGGING
 				GLX_CONTEXT_DEBUG_BIT_ARB,
 #endif
-				0
+				None
 			};
 
 			auto glXCreateContextAttribsARB = (GLXCREATECONTEXTATTRIBSARBPROC)glXGetProcAddress((const GLubyte*)"glXCreateContextAttribsARB");
 
 			if (glXCreateContextAttribsARB == NULL)
 			{
-				std::cerr << "ERR: glXGetProcAddress failed" << std::endl;
 				return false;
 			}
 
@@ -241,7 +238,11 @@ namespace gl
 				return false;
 			}
 
-			glXMakeCurrent(display, win, glc);
+			if (glXMakeCurrent(display, win, glc) == False)
+			{
+				std::cerr << "ERR: Could not make new context current" << std::endl;
+				return false;
+			}
 
 #ifdef __glew_h__
 			GLenum glewInitVal = glewInit();
