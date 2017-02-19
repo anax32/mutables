@@ -3,6 +3,8 @@
 
 #include "img_io/png_io.h"
 
+#include "../tests.h"
+
 void write_to_stream_test ()
 {
 	// create an empty image

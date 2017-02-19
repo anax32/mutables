@@ -5,7 +5,7 @@ INCLUDE_DIR=include/
 LIBS=-lpng -lX11 -lGL -lGLEW
 
 BIN_DIR = bin/
-TEST_DIR = test/
+TEST_DIR = tests/
 TEST_BIN_DIR = bin/test/
 
 $(BIN_DIR):
@@ -26,3 +26,6 @@ test_png_io: $(TEST_DIR)img_io/png_io.cpp $(INCLUDE_DIR)img_io/png_io.h $(TEST_B
 all_tests: test_gl_context test_gl_textures test_png_io
 
 all: all_tests
+
+clean:
+	rm -drf $(BIN_DIR)

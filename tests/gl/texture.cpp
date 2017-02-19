@@ -1,6 +1,8 @@
 #include "gl/texture.h"
 #include <fstream>
 
+#include "../tests.h"
+
 void create_test ()
 {
 	auto A = texture::create(gl::size2d(64, 64));
