@@ -1,0 +1,23 @@
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=733558
+	// for the documentation about the tasks.json format
+	"version": "0.1.0",
+	"tasks" : [
+		{
+			"taskName":"build",
+			"command": "make",
+			"isShellCommand": true,
+			"args": ["test_gl_context", "test_gl_textures", "test_png_io"],
+			"showOutput": "always",
+			"suppressTaskName": true
+		},
+		{
+			"taskName":"run tests",
+			"command": "run-parts",
+			"args":["${workspaceRoot}/bin/test/"],
+			"isShellCommand":true,
+			"showOutput": "always",
+			"isTestCommand": true
+		}
+	]
+}

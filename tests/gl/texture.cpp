@@ -1,3 +1,5 @@
+#include "gl/defs.h"
+#include "gl/context.h"
 #include "gl/texture.h"
 #include <fstream>
 
@@ -5,35 +7,35 @@
 
 void create_test ()
 {
-	auto A = texture::create(gl::size2d(64, 64));
-	auto B = texture::create(gl::size2d(64, 64), GL_LUMINANCE);
-	auto C = texture::create(gl::size2d(64, 64), GL_RG);
-	auto D = texture::create(gl::size3d(64, 64, 64));
-	auto E = texture::create(gl::size3d(64, 64, 64), GL_LUMINANCE);
-	auto F = texture::create(gl::size2d(64, 64), GL_DEPTH_COMPONENT);
-	auto G = texture::create(gl::size2d(64, 64), GL_DEPTH_COMPONENT16);
+	auto A = gl::texture::create(gl::size2d(64, 64));
+	auto B = gl::texture::create(gl::size2d(64, 64), GL_LUMINANCE);
+	auto C = gl::texture::create(gl::size2d(64, 64), GL_RG);
+	auto D = gl::texture::create(gl::size3d(64, 64, 64));
+	auto E = gl::texture::create(gl::size3d(64, 64, 64), GL_LUMINANCE);
+	auto F = gl::texture::create(gl::size2d(64, 64), GL_DEPTH_COMPONENT);
+	auto G = gl::texture::create(gl::size2d(64, 64), GL_DEPTH_COMPONENT16);
 
-	assert(A != texture::invalid_texture_id);
-	assert(B != texture::invalid_texture_id);
-	assert(C != texture::invalid_texture_id);
-	assert(D != texture::invalid_texture_id);
-	assert(E != texture::invalid_texture_id);
-	assert(F != texture::invalid_texture_id);
-	assert(G != texture::invalid_texture_id);
+	assert_are_not_equal (A, gl::texture::invalid_texture_id);
+	assert_are_not_equal (B, gl::texture::invalid_texture_id);
+	assert_are_not_equal (C, gl::texture::invalid_texture_id);
+	assert_are_not_equal (D, gl::texture::invalid_texture_id);
+	assert_are_not_equal (E, gl::texture::invalid_texture_id);
+	assert_are_not_equal (F, gl::texture::invalid_texture_id);
+	assert_are_not_equal (G, gl::texture::invalid_texture_id);
 
-	texture::clean(A);
-	texture::clean(B);
-	texture::clean(C);
-	texture::clean(D);
-	texture::clean(E);
-	texture::clean(F);
-	texture::clean(G);
+	gl::texture::clean(A);
+	gl::texture::clean(B);
+	gl::texture::clean(C);
+	gl::texture::clean(D);
+	gl::texture::clean(E);
+	gl::texture::clean(F);
+	gl::texture::clean(G);
 }
 
 void write_test ()
 {
 	const unsigned char *img_data = (unsigned char*)"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABABABABABAB";
-	auto A = texture::create(size2d(32, 32));
+	auto A = gl::texture::create (gl::size2d(32, 32));
 
 	// actual image data
 	glBindTexture(GL_TEXTURE_2D, A);
@@ -44,11 +46,11 @@ void write_test ()
 	auto write_func = [exp_buf](int w, int h, int d, const unsigned char* buf)->bool {memcpy(exp_buf, buf, w*h*d); return true; };
 
 	// write function
-	texture::write(A, write_func);
-	texture::clean(A);
+	gl::texture::write(A, write_func);
+	gl::texture::clean(A);
 
 	// test
-	assert(memcmp(img_data, exp_buf, 32 * 32 * 4) == 0);
+	assert_are_equal (0, memcmp (img_data, exp_buf, 32 * 32 * 4));
 
 	// cleanup
 	delete[] exp_buf;
@@ -57,7 +59,7 @@ void write_test ()
 void write_file_test ()
 {
 	const unsigned char *img_data = (unsigned char*)"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABABABABABAB";
-	auto A = texture::create(size2d(32, 32));
+	auto A = gl::texture::create (gl::size2d(32, 32));
 
 	// actual image data
 	glBindTexture(GL_TEXTURE_2D, A);
@@ -81,22 +83,22 @@ void write_file_test ()
 		std::placeholders::_4);
 
 	// write function
-	texture::write(A, write_func);
-	texture::clean(A);
+	gl::texture::write(A, write_func);
+	gl::texture::clean(A);
 
 	std::ifstream ifs(tmp_filename);
-	assert(ifs.good() == true);
+	assert_is_true (ifs.good ());
 
 	unsigned char	*exp_buf = new unsigned char[32 * 32 * 4];
 	ifs.read((char*)exp_buf, 32 * 32 * 4);
 	ifs.close();
 
 	// test
-	assert(memcmp(img_data, exp_buf, 32 * 32 * 4) == 0);
+	assert_are_equal (0, memcmp (img_data, exp_buf, 32 * 32 * 4));
 
 	// cleanup
 	delete[] exp_buf;
-	std::remove(tmp_filename.c_str());
+	std::remove (tmp_filename.c_str());
 }
 
 void gl_texture_tests ()
@@ -110,5 +112,5 @@ void gl_texture_tests ()
 
 int main (int argc, char** argv)
 {	
-	TEST_GROUP(gl_window_tests);	
+	TEST_GROUP(gl_texture_tests);	
 }
