@@ -101,12 +101,124 @@ void write_file_test ()
 	std::remove (tmp_filename.c_str());
 }
 
+void width_test ()
+{
+	auto T = gl::texture::create (gl::size2d (64, 128));
+	gl::texture::bind (T);
+	assert_are_equal (64, gl::texture::width ());
+	gl::texture::clean (T);
+}
+void height_test ()
+{
+	auto T = gl::texture::create (gl::size2d (64, 128));
+	gl::texture::bind (T);
+	assert_are_equal (128, gl::texture::height ());
+	gl::texture::clean (T);
+}
+void format_RGBA32F_test ()
+{
+	auto T = gl::texture::create (gl::size2d (64, 64));
+	gl::texture::bind (T);
+	assert_are_equal (GL_RGBA32F, gl::texture::format ());
+	gl::texture::clean (T);
+}
+void format_R32F_test ()
+{
+	auto T = gl::texture::create (gl::size2d (64, 64), GL_R32F);
+	gl::texture::bind (T);
+	assert_are_equal (GL_R32F, gl::texture::format ());
+	gl::texture::clean (T);
+}
+void format_component_type_test ()
+{
+	assert_are_equal (1, gl::texture::format_component_count (GL_LUMINANCE));
+	assert_are_equal (1, gl::texture::format_component_count (GL_ALPHA));
+	assert_are_equal (1, gl::texture::format_component_count (GL_RED));
+	assert_are_equal (1, gl::texture::format_component_count (GL_GREEN));
+	assert_are_equal (1, gl::texture::format_component_count (GL_BLUE));
+	assert_are_equal (1, gl::texture::format_component_count (GL_DEPTH_COMPONENT));
+	assert_are_equal (1, gl::texture::format_component_count (GL_R8));
+	assert_are_equal (1, gl::texture::format_component_count (GL_R16));
+	assert_are_equal (1, gl::texture::format_component_count (GL_R16F));
+	assert_are_equal (1, gl::texture::format_component_count (GL_R32F));
+	assert_are_equal (1, gl::texture::format_component_count (GL_R8I));
+	assert_are_equal (1, gl::texture::format_component_count (GL_R8UI));
+	assert_are_equal (1, gl::texture::format_component_count (GL_R16I));
+	assert_are_equal (1, gl::texture::format_component_count (GL_R16UI));
+	assert_are_equal (1, gl::texture::format_component_count (GL_R32I));
+	assert_are_equal (1, gl::texture::format_component_count (GL_R32UI));
+	assert_are_equal (2, gl::texture::format_component_count (GL_RG));
+	assert_are_equal (2, gl::texture::format_component_count (GL_RG_INTEGER));
+	assert_are_equal (2, gl::texture::format_component_count (GL_RG8));
+	assert_are_equal (2, gl::texture::format_component_count (GL_RG16));
+	assert_are_equal (2, gl::texture::format_component_count (GL_RG16F));
+	assert_are_equal (2, gl::texture::format_component_count (GL_RG32F));
+	assert_are_equal (2, gl::texture::format_component_count (GL_RG8I));
+	assert_are_equal (2, gl::texture::format_component_count (GL_RG8UI));
+	assert_are_equal (2, gl::texture::format_component_count (GL_RG16I));
+	assert_are_equal (2, gl::texture::format_component_count (GL_RG16UI));
+	assert_are_equal (2, gl::texture::format_component_count (GL_RG32I));
+	assert_are_equal (2, gl::texture::format_component_count (GL_RG32UI));
+	assert_are_equal (2, gl::texture::format_component_count (GL_LUMINANCE_ALPHA));
+	assert_are_equal (3, gl::texture::format_component_count (GL_RGB));
+	assert_are_equal (4, gl::texture::format_component_count (GL_RGBA));
+	assert_are_equal (4, gl::texture::format_component_count (GL_RGBA32F));
+}
+void target_for_type_GL_TEXTURE_1D_test ()
+{
+	assert_are_equal (GL_TEXTURE_1D, gl::texture::target_for_type (GL_TEXTURE_1D));
+}
+void target_for_type_GL_TEXTURE_2D_test ()
+{
+	assert_are_equal (GL_TEXTURE_2D, gl::texture::target_for_type (GL_TEXTURE_2D));
+}
+void target_for_type_GL_TEXTURE_3D_test ()
+{
+	assert_are_equal (GL_TEXTURE_3D, gl::texture::target_for_type (GL_TEXTURE_3D));
+}
+void target_for_type_GL_DEPTH_COMPONENT_test ()
+{
+	assert_are_equal (GL_TEXTURE_2D, gl::texture::target_for_type (GL_DEPTH_COMPONENT));
+}
+void target_for_type_GL_TEXTURE_2D_ARRAY_test ()
+{
+	assert_are_equal (GL_TEXTURE_2D_ARRAY, gl::texture::target_for_type (GL_TEXTURE_2D_ARRAY));
+}
+void buffer_size_64_64_3_test ()
+{
+	assert_are_equal (64*64*3, gl::texture::buffer_size (64, 64, 3));
+}
+void buffer_size_64_64_4_test ()
+{
+	assert_are_equal (64*64*4, gl::texture::buffer_size (64, 64, 4));
+}
+void buffer_size_8_8_3_test ()
+{
+	assert_are_equal (8*8*3, gl::texture::buffer_size (8, 8, 3));
+}
+void buffer_size_3_2_3_test ()
+{
+	assert_are_equal (8*8*3, gl::texture::buffer_size (3, 2, 3));
+}
 void gl_texture_tests ()
 {
 	gl::context::create ();
 	TEST(create_test);
 	TEST(write_test);
 	TEST(write_file_test);
+	TEST(width_test);
+	TEST(height_test);
+	TEST(format_RGBA32F_test);
+	TEST(format_R32F_test);
+	TEST(target_for_type_GL_TEXTURE_1D_test);
+	TEST(target_for_type_GL_TEXTURE_2D_test);
+	TEST(target_for_type_GL_TEXTURE_3D_test);
+	TEST(target_for_type_GL_DEPTH_COMPONENT_test);
+	TEST(target_for_type_GL_TEXTURE_2D_ARRAY_test);
+	TEST(buffer_size_64_64_3_test);
+	TEST(buffer_size_64_64_4_test);
+	TEST(buffer_size_8_8_3_test);
+	TEST(buffer_size_3_2_3_test);
 	gl::context::clean ();
 }
 

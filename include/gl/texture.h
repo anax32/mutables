@@ -122,5 +122,175 @@ namespace gl
 				clean (tex_id.second);
 			}
 		}
+		/**
+		 * bind a texture object to the atu
+		 */
+		void bind (unsigned int texid, GLenum target = GL_TEXTURE_2D)
+		{
+			glBindTexture (target, texid);
+		}
+		/**
+		 * bind object 0 to the atu
+		 */
+		void unbind (GLenum target = GL_TEXTURE_2D)
+		{
+			glBindTexture (target, 0);
+		}
+		/**
+		 * Wrapper function for glGetTexLevelParameteriv.
+		 * @param parameter glenum of the texture parameter to query
+		 * @return integer value of the texture parameter.
+		 */
+		unsigned int parameter (GLenum parameter, GLenum target = GL_TEXTURE_2D, GLint level = 0)
+		{
+			GLint	p;
+
+			switch (parameter)
+			{
+				case GL_TEXTURE_MAG_FILTER:
+				case GL_TEXTURE_MIN_FILTER:
+				case GL_TEXTURE_WRAP_S:
+				case GL_TEXTURE_WRAP_T:
+				{
+					if (target != GL_TEXTURE_2D)	{p = GL_NONE;}
+					else							{glGetTexParameteriv (target, GL_TEXTURE_MIN_FILTER, &p);}
+					break;
+				}
+				default:
+				{
+					glGetTexLevelParameteriv (target, level, parameter, &p);
+					break;
+				}
+			}
+
+			return p;
+		}
+		/**
+		 * @return the width of the currently bound texture
+		 */
+		unsigned int width (GLenum target = GL_TEXTURE_2D, GLint level = 0)				{return parameter (GL_TEXTURE_WIDTH, target, level);}
+		/**
+		 * @return the height of the currently bound texture
+		 */
+		unsigned int height (GLenum target = GL_TEXTURE_2D, GLint level = 0)			{return parameter (GL_TEXTURE_HEIGHT, target, level);}
+		/**
+		 * @return the internal format of the currently bound texture
+		 */
+		unsigned int format (GLenum target = GL_TEXTURE_2D, GLint level = 0)			{return parameter (GL_TEXTURE_INTERNAL_FORMAT, target, level);}
+		/**
+		 * @returns the number of components for an opengl image format.
+		 */
+		unsigned int format_component_count (const unsigned int format)
+		{
+			switch (format)
+			{
+			case GL_LUMINANCE:
+			case GL_ALPHA:
+			case GL_RED:
+			case GL_GREEN:
+			case GL_BLUE:
+			case GL_DEPTH_COMPONENT:
+			case GL_R8:
+			case GL_R16:
+			case GL_R16F:
+			case GL_R32F:
+			case GL_R8I:
+			case GL_R8UI:
+			case GL_R16I:
+			case GL_R16UI:
+			case GL_R32I:
+			case GL_R32UI:				return 1;
+			case GL_LUMINANCE_ALPHA:
+			case GL_RG:
+			case GL_RG_INTEGER:
+			case GL_RG8:
+			case GL_RG16:
+			case GL_RG16F:
+			case GL_RG32F:
+			case GL_RG8I:
+			case GL_RG8UI:
+			case GL_RG16I:
+			case GL_RG16UI:
+			case GL_RG32I:
+			case GL_RG32UI:				return 2;
+			case GL_RGB:				return 3;
+			case GL_RGBA:				return 4;
+			case GL_RGBA32F:			return 4;
+			default:					std::cerr << "ERR: unknown texture format\0"; return 0;
+			}
+		}
+		unsigned int target_for_type (const unsigned int type)
+		{
+			switch (type)
+			{
+			case GL_TEXTURE_1D:			return GL_TEXTURE_1D;
+			case GL_TEXTURE_2D:			return GL_TEXTURE_2D;
+			case GL_TEXTURE_3D:			return GL_TEXTURE_3D;
+			case GL_DEPTH_COMPONENT:	return GL_TEXTURE_2D;
+			case GL_TEXTURE_2D_ARRAY:	return GL_TEXTURE_2D_ARRAY;
+			default:					std::cerr << "ERR: Unknown texture type\0"; return GL_NONE;
+			}
+		}
+		unsigned int buffer_size (const unsigned int w, const unsigned int h, const unsigned int d)
+		{
+			return ((w<8)?8:w) * ((h<8)?8:h) * d;
+		}
+		/**
+		 * Produces mipmaps for the currently bound texture by setting the texture parameters
+		 * to GL_LINEAR_MIPMAP_LINEAR for GL_TEXTURE_MIN_FILTER and calling
+		 * glGenerateMipmapEXT ().
+		 */
+		void mipmap (void)
+		{
+			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			glGenerateMipmap (GL_TEXTURE_2D);
+		}
+		bool has_mipmaps (GLenum target = GL_TEXTURE_2D)
+		{
+			return (parameter (GL_TEXTURE_MIN_FILTER, target) == GL_LINEAR_MIPMAP_LINEAR);
+		}
+		bool set_content (const unsigned int tex_id,
+						  const char *image,
+						  const unsigned int w,
+						  const unsigned int h,
+						  const unsigned int format = GL_RGBA,
+						  const unsigned int internal_format = GL_RGBA,
+						  const bool flip = true,
+						  GLenum target = GL_TEXTURE_2D)
+		{
+		//	glGenTextures (1, &textureID);
+			glBindTexture (target, tex_id);
+			glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+			switch (target)
+			{
+				case GL_TEXTURE_1D:
+				{
+					switch (format_component_count (format))
+					{
+					case 1: glTexImage1D (target, 0, internal_format, h, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, image); break;
+					case 3: glTexImage1D (target, 0, internal_format, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image); break;
+					case 4: glTexImage1D (target, 0, internal_format, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image); break;
+					}
+					break;
+				}
+				case GL_TEXTURE_2D:
+				{
+					switch (format_component_count (format))
+					{
+					case 1: glTexImage2D (target, 0, internal_format, w, h, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, image); break;
+					case 3: glTexImage2D (target, 0, internal_format, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image); break;
+					case 4: glTexImage2D (target, 0, internal_format, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image); break;
+					}
+					break;
+				}
+			}
+
+			return true;
+		}
 	}
 }
