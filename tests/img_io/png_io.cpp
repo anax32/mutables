@@ -26,7 +26,7 @@ void write_to_stream_test ()
 }
 void write_to_file_test ()
 {
-	std::string fname = std::tmpnam(nullptr);
+	std::string fname = "./temp_pngio_write_to_file_test\0";
 	const png_io::img_t	image = { 8, 8, 1, 8, (unsigned char*)"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABABABABABAB" };
 
 	assert(png_io::write(fname, image) == true);
@@ -94,29 +94,29 @@ void read_from_stream_operator_test ()
 }
 void read_from_file_test ()
 {
-	std::string fname = std::tmpnam(nullptr);
+	std::string fname = "./temp_pngio_read_file_file_test\0";
 	const png_io::img_t	image = { 8, 8, 1, 8, (unsigned char*)"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABABABABABAB" };
 	png_io::img_t		result = { 0 };
 
-	assert(png_io::write(fname, image) == true);
+	assert (png_io::write (fname, image) == true);
 
 	// attempt to open the file
-	std::ifstream ifs(fname);
-	assert(ifs.good() == true);
-	ifs.close();
+	std::ifstream ifs (fname);
+	assert (ifs.good () == true);
+	ifs.close ();
 
-	assert(png_io::read(fname, result) == true);
+	assert (png_io::read (fname, result) == true);
 
-	assert(result.width == image.width);
-	assert(result.height == image.height);
-	assert(result.channels == image.channels);
-	assert(result.bit_depth == 8);
+	assert (result.width == image.width);
+	assert (result.height == image.height);
+	assert (result.channels == image.channels);
+	assert (result.bit_depth == 8);
 
-	assert(memcmp(result.buf, image.buf, 64) == 0);
+	assert (memcmp (result.buf, image.buf, 64) == 0);
 
 	// cleanup
-	std::remove(fname.c_str());
-	delete[] image.buf;
+	std::remove (fname.c_str ());
+	delete[] result.buf;
 }
 
 void png_read_tests ()

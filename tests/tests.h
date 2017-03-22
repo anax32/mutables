@@ -27,7 +27,7 @@ void time_function (std::function<void()> x, const char* fname, const int L)
 			fprintf (stdout, " ");
 
 		// FIXME: %-45-Ls
-		fprintf(stdout, "%-45s", fname);
+		fprintf(stdout, "%-44s", fname);
 		T=clock();
 	}
 

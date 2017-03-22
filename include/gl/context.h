@@ -11,7 +11,7 @@ namespace gl
 		/*
 		* debug callback from opengl
 		*/
-		void openglDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, void* userParam)
+		void openglDebugCallback (GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, void* userParam)
 		{
 			std::string	err;
 
@@ -46,7 +46,7 @@ namespace gl
 		* + enable debugging if required
 		*/
 #ifdef _WIN32
-		bool create(HWND hwnd)
+		bool create (HWND hwnd)
 		{
 			PIXELFORMATDESCRIPTOR pfd =
 			{
@@ -74,44 +74,44 @@ namespace gl
 
 			if (hwnd == NULL)
 			{
-				hwnd = window::create();
+				hwnd = window::create ();
 			}
 
-			if ((hDC = GetDC(hwnd)) == NULL)
+			if ((hDC = GetDC (hwnd)) == NULL)
 			{
-				window::clean(hwnd);
-				logr::err("Could not get initial window device context");
+				window::clean (hwnd);
+				logr::err ("Could not get initial window device context");
 				return false;
 			}
 
-			npfd = ChoosePixelFormat(hDC, &pfd);
-			SetPixelFormat(hDC, npfd, &pfd);
+			npfd = ChoosePixelFormat (hDC, &pfd);
+			SetPixelFormat (hDC, npfd, &pfd);
 
-			if ((htglrc = wglCreateContext(hDC)) == NULL)
+			if ((htglrc = wglCreateContext (hDC)) == NULL)
 			{
-				window::clean(hwnd);
-				logr::err("Could not create gl context");
+				window::clean (hwnd);
+				logr::err ("Could not create gl context");
 				return false;
 			}
 
-			if (wglMakeCurrent(hDC, htglrc) == FALSE)
+			if (wglMakeCurrent (hDC, htglrc) == FALSE)
 			{
-				wglDeleteContext(htglrc);
-				window::clean(hwnd);
-				logr::err("Could not make gl context current on device");
+				wglDeleteContext (htglrc);
+				window::clean (hwnd);
+				logr::err ("Could not make gl context current on device");
 				return false;
 			}
 
 			// setup glew
 #ifdef __glew_h__
-			GLenum glewInitVal = glewInit();
+			GLenum glewInitVal = glewInit ();
 			if (glewInitVal != GLEW_OK)				// Enable GLEW
 			{
-				wglDeleteContext(htglrc);
+				wglDeleteContext (htglrc);
 				return false;
 			}
 #else
-			wglDeleteContext(htglrc);
+			wglDeleteContext (htglrc);
 			return false;
 #endif
 
@@ -127,12 +127,12 @@ namespace gl
 				0
 			};
 
-			if (wglewIsSupported("WGL_ARB_create_context") == 1)
+			if (wglewIsSupported ("WGL_ARB_create_context") == 1)
 			{
-				hglrc = wglCreateContextAttribsARB(hDC, NULL, attributes);
-				wglMakeCurrent(NULL, NULL);
-				wglDeleteContext(htglrc);
-				wglMakeCurrent(hDC, hglrc);
+				hglrc = wglCreateContextAttribsARB (hDC, NULL, attributes);
+				wglMakeCurrent (NULL, NULL);
+				wglDeleteContext (htglrc);
+				wglMakeCurrent (hDC, hglrc);
 			}
 			else
 			{
@@ -140,14 +140,14 @@ namespace gl
 			}
 
 #ifdef OPENGL_DEBUGGING
-			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-			glDebugMessageCallback((GLDEBUGPROC)openglDebugCallback, NULL);
+			glEnable (GL_DEBUG_OUTPUT_SYNCHRONOUS);
+			glDebugMessageCallback ((GLDEBUGPROC)openglDebugCallback, NULL);
 			//glDebugMessageControl (GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, &unusedIds, true);
 #endif
 			// set some initial gl state
 			{
-				glClearColor(0.4f, 0.6f, 0.9f, 0.0f); // clear color based on Microsofts CornflowerBlue (default in XNA)
-				glClearColor(0.0f, 1.0f, 1.0f, 0.0f);
+				glClearColor (0.4f, 0.6f, 0.9f, 0.0f); // clear color based on Microsofts CornflowerBlue (default in XNA)
+				glClearColor (0.0f, 1.0f, 1.0f, 0.0f);
 			}
 
 			return true;
@@ -158,14 +158,14 @@ namespace gl
 		* + make a null context current on hwnd
 		* + delete the obtained context
 		*/
-		void clean(HWND hwnd)
+		void clean (HWND hwnd)
 		{
-			HGLRC hglrc = wglGetCurrentContext();
-			wglMakeCurrent(GetDC(hwnd), NULL);
-			wglDeleteContext(hglrc);
+			HGLRC hglrc = wglGetCurrentContext ();
+			wglMakeCurrent (GetDC (hwnd), NULL);
+			wglDeleteContext (hglrc);
 		}
 #elif __linux__
-		bool create(Display *display = NULL)
+		bool create (Display *display = NULL)
 		{
 			int visual_attrs[] = { GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
 				GLX_RENDER_TYPE, GLX_RGBA_BIT,
@@ -186,33 +186,39 @@ namespace gl
 			XSetWindowAttributes    swa;
 			GLXContext              glc;
 
-			if ((display == NULL) && ((display = XOpenDisplay(NULL)) == NULL))
+			if ((display == NULL) && ((display = XOpenDisplay (NULL)) == NULL))
 			{
 				std::cerr << "ERR: cannot connect to X server\0" << std::endl;
 				return false;
 			}
 
-			if ((fbc = glXChooseFBConfig(display, DefaultScreen(display), visual_attrs, &fbcCount)) == NULL)
+			if ((fbc = glXChooseFBConfig (display, DefaultScreen (display), visual_attrs, &fbcCount)) == NULL)
 			{
 				std::cerr << "ERR: Could not retrieve framebuffer config\0" << std::endl;
+				XFree (fbc);
+				XCloseDisplay (display);
 				return false;
 			}
 
 			// get the visual from the framebuffer config
-			vi = glXGetVisualFromFBConfig(display, fbc[0]);
+			vi = glXGetVisualFromFBConfig (display, fbc[0]);
 
-			swa.colormap = XCreateColormap(display, DefaultRootWindow(display), vi->visual, AllocNone);
+			swa.colormap = XCreateColormap (display, DefaultRootWindow(display), vi->visual, AllocNone);
 			swa.event_mask = ExposureMask | KeyPressMask;
 
-			win = XCreateWindow(display, DefaultRootWindow(display), 0, 0, 600, 600, 0, vi->depth, InputOutput, vi->visual, CWColormap | CWEventMask, &swa);
+			win = XCreateWindow (display, DefaultRootWindow(display), 0, 0, 600, 600, 0, vi->depth, InputOutput, vi->visual, CWColormap | CWEventMask, &swa);
 
 			if (win == BadWindow)
 			{
 				std::cerr << "ERR: Could not create window\0" << std::endl;
+				XFree (vi);
+				XFree (fbc);
 				return false;
 			}
 
-			XMapWindow(display, win);
+			XFree (vi);
+
+			XMapWindow (display, win);
 
 			int attributes[] = {
 				GLX_CONTEXT_MAJOR_VERSION_ARB, REQUEST_GL_MAJOR_VERSION, // Set the MAJOR version of OpenGL to 3  
@@ -229,40 +235,44 @@ namespace gl
 
 			if (glXCreateContextAttribsARB == NULL)
 			{
+				XFree (fbc);
 				return false;
 			}
 
-			if ((glc = glXCreateContextAttribsARB(display, fbc[0], 0, True, attributes)) == NULL)
+			if ((glc = glXCreateContextAttribsARB (display, fbc[0], 0, True, attributes)) == NULL)
 			{
 				std::cerr << "ERR: Could not create context" << std::endl;
+				XFree (fbc);
 				return false;
 			}
 
-			if (glXMakeCurrent(display, win, glc) == False)
+			XFree (fbc);
+
+			if (glXMakeCurrent (display, win, glc) == False)
 			{
 				std::cerr << "ERR: Could not make new context current" << std::endl;
 				return false;
 			}
 
 #ifdef __glew_h__
-			GLenum glewInitVal = glewInit();
+			GLenum glewInitVal = glewInit ();
 			if (glewInitVal != GLEW_OK)				// Enable GLEW
 			{
 				std::cerr << "ERR: Could not initialise glew" << std::endl;
-				glXDestroyContext(display, glc);
+				glXDestroyContext (display, glc);
 				return false;
 			}
 #endif
 
 #ifdef OPENGL_DEBUGGING
-			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-			glDebugMessageCallback(openglDebugCallback, NULL);
+			glEnable (GL_DEBUG_OUTPUT_SYNCHRONOUS);
+			glDebugMessageCallback (openglDebugCallback, NULL);
 			//glDebugMessageControl (GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, &unusedIds, true);
 #endif
 			// set some initial gl state
 			{
-				glClearColor(0.4f, 0.6f, 0.9f, 0.0f); // clear color based on Microsofts CornflowerBlue (default in XNA)
-				glClearColor(0.0f, 1.0f, 1.0f, 0.0f);
+				glClearColor (0.4f, 0.6f, 0.9f, 0.0f); // clear color based on Microsofts CornflowerBlue (default in XNA)
+				glClearColor (0.0f, 1.0f, 1.0f, 0.0f);
 			}
 
 			return true;
@@ -276,19 +286,20 @@ namespace gl
 		*/
 		void clean()
 		{
-			auto display = XOpenDisplay(NULL);
-			auto glrc = glXGetCurrentContext();
-			glXMakeCurrent(display, None, NULL);
-			glXDestroyContext(display, glrc);
+			auto display = XOpenDisplay (NULL);
+			auto glrc = glXGetCurrentContext ();
+			glXMakeCurrent (display, None, NULL);
+			glXDestroyContext (display, glrc);
+			XCloseDisplay (display);
 		}
 #endif
 		std::pair<int, int> get_version()
 		{
 			int gl_version[2] = { -1, -1 };
-			glGetIntegerv(GL_MAJOR_VERSION, &gl_version[0]);
-			glGetIntegerv(GL_MINOR_VERSION, &gl_version[1]);
+			glGetIntegerv (GL_MAJOR_VERSION, &gl_version[0]);
+			glGetIntegerv (GL_MINOR_VERSION, &gl_version[1]);
 
-			return std::make_pair(gl_version[0], gl_version[1]);
+			return std::make_pair (gl_version[0], gl_version[1]);
 		}
 	};
 }

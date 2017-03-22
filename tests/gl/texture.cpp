@@ -66,7 +66,7 @@ void write_file_test ()
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 32, 32, 0, GL_RGBA, GL_UNSIGNED_BYTE, img_data);
 
 	// read back image data
-	auto tmp_filename = std::string(std::tmpnam(NULL));
+	auto tmp_filename = std::string("./temp_texture_write_file_test\0");
 	auto write_func_with_filename = [](const std::string& filename, int w, int h, int d, const unsigned char* buf)->bool
 	{
 		std::ofstream ofs(filename.c_str());
