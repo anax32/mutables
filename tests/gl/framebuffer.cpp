@@ -87,6 +87,38 @@ void attach_textureset_test ()
 	gl::texture::clean (texs);
 	gl::framebuffer::clean (A);
 }
+void render_red_image_test ()
+{
+	auto A = gl::framebuffer::create ();
+	assert_are_not_equal (A, gl::framebuffer::invalid_framebuffer_id);
+	auto T = gl::texture::create (gl::size2d (64, 64));
+	assert_are_not_equal (T, gl::texture::invalid_texture_id);
+
+	gl::framebuffer::bind (A);
+	gl::framebuffer::attach_texture (T);
+
+	glClearColor (1.0f, 0.0f, 0.0f, 1.0f);
+	glClear (GL_COLOR_BUFFER_BIT);
+
+	gl::framebuffer::unbind ();
+	gl::framebuffer::clean (A);
+
+	gl::texture::write (T, [](const int w, const int h, const int d, const unsigned char *buf)
+						{
+							auto n = w*h;
+							auto *c = buf;
+							for (auto i=0;i<n;i++,c+=d)
+							{
+								assert_are_equal (c[0], 255);
+								assert_are_equal (c[1], 0);
+								assert_are_equal (c[2], 0);
+								assert_are_equal (c[3], 255);
+							}
+							return true;
+						});
+
+	gl::texture::clean (T);
+}
 
 void gl_framebuffer_tests ()
 {
@@ -96,6 +128,7 @@ void gl_framebuffer_tests ()
 	TEST(attach_single_test);
 	TEST(attach_bunch_test);
 	TEST(attach_textureset_test);
+	TEST(render_red_image_test);
 	gl::context::clean ();
 }
 
