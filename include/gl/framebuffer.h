@@ -14,10 +14,10 @@ namespace gl
 		/*
 		* create a framebuffer object
 		*/
-		unsigned int create()
+		unsigned int create ()
 		{
 			unsigned int	fboid;
-			glGenFramebuffers(1, &fboid);
+			glGenFramebuffers (1, &fboid);
 			return fboid;
 		}
 		void bind (const unsigned int fboid)
@@ -28,7 +28,7 @@ namespace gl
 		{
 			glBindFramebuffer (GL_FRAMEBUFFER, 0);
 		}
-		void drawBuffers (const unsigned int numberOfBuffers)
+		void draw_buffers (const unsigned int numberOfBuffers)
 		{
 			GLenum			db[] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4,
 									GL_COLOR_ATTACHMENT5, GL_COLOR_ATTACHMENT6, GL_COLOR_ATTACHMENT7, GL_COLOR_ATTACHMENT8, GL_COLOR_ATTACHMENT9,
@@ -36,19 +36,19 @@ namespace gl
 
 			glDrawBuffers (numberOfBuffers, db);
 		}
-		void attachTexture1D (const unsigned int texid)
+		void attach_texture1D (const unsigned int texid)
 		{
 			glFramebufferTexture1D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_1D, texid, 0);
-			drawBuffers (1);
+			draw_buffers (1);
 		}
-		void attachTexture (const unsigned int texid, const unsigned int depid = 0)
+		void attach_texture (const unsigned int texid, const unsigned int depid = 0)
 		{
 			// attach the target
 			glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texid, 0);
 			glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depid, 0);
-			drawBuffers (1);
+			draw_buffers (1);
 		}
-		void attachTexture (const unsigned int *targets, const unsigned int targetCount, const unsigned int depid = 0)
+		void attach_texture (const unsigned int *targets, const unsigned int targetCount, const unsigned int depid = 0)
 		{
 			// attach the targets
 			for (auto i=0; i<targetCount; i++)
@@ -57,7 +57,28 @@ namespace gl
 			}
 
 			glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depid, 0);
-			drawBuffers (targetCount);
+
+			draw_buffers (targetCount);
+		}
+		void attach_texture (const gl::texture::texture_set_t& texture_set)
+		{
+			unsigned int	tcnt = 0;
+
+			for (auto& texname : texture_set)
+			{
+				if (texname.first.compare ("depth") == 0)
+					continue;
+
+				glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+tcnt, GL_TEXTURE_2D, texname.second, 0);
+				tcnt++;
+			}
+
+			if (gl::has_resource (texture_set, "depth") == true)
+			{
+				glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, gl::get_resource (texture_set, "depth").second, 0);
+			}
+
+			draw_buffers (tcnt);
 		}
 		/*
 		* verify the currently bound framebuffer object
@@ -84,7 +105,7 @@ namespace gl
 		/*
 		* call glDeleteFramebuffers with the framebuffer object id
 		*/
-		void clean(unsigned int fboid)
+		void clean (unsigned int fboid)
 		{
 			glDeleteFramebuffers(1, &fboid);
 		}

@@ -60,6 +60,11 @@ namespace gl
 
 		return *it;
 	}
+	
+	bool has_resource (const resource_set_t& res, const resource_set_t::key_type& name)
+	{
+		return (res.find (name) != res.end ());
+	}
 
 	/*
 	* misc utility functions
