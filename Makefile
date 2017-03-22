@@ -26,7 +26,10 @@ test_png_io: $(TEST_DIR)img_io/png_io.cpp $(INCLUDE_DIR)img_io/png_io.h $(TEST_B
 test_gl_framebuffers: $(TEST_DIR)gl/framebuffer.cpp $(INCLUDE_DIR)gl/framebuffer.h $(TEST_BIN_DIR)
 	$(CC) $(FLAGS) -I$(INCLUDE_DIR) $(LIBS) -o $(TEST_BIN_DIR)$@ $<
 
-all_tests: test_gl_context test_gl_textures test_png_io test_gl_framebuffers
+test_gl_buffer: $(TEST_DIR)gl/buffer.cpp $(INCLUDE_DIR)gl/buffer.h $(TEST_BIN_DIR)
+	$(CC) $(FLAGS) -I$(INCLUDE_DIR) $(LIBS) -o $(TEST_BIN_DIR)$@ $<
+
+all_tests: test_gl_context test_gl_textures test_png_io test_gl_framebuffers test_gl_buffer
 
 all: all_tests
 

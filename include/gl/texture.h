@@ -62,6 +62,11 @@ namespace gl
 			return texid;
 		}
 
+		bool is_texture (const unsigned int tex_id)
+		{
+			return (glIsTexture (tex_id) == GL_TRUE);
+		}
+
 		typedef std::function <bool(const int, const int, const int, const unsigned char*)>		write_fn_t;
 
 		/*
