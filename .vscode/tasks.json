@@ -7,7 +7,8 @@
 			"taskName":"build",
 			"command": "make",
 			"isShellCommand": true,
-			"args": ["test_gl_context", "test_gl_textures", "test_png_io", "test_gl_framebuffers", "test_gl_buffer"],
+			"args": ["all_gl_tests"],
+			//"args": ["test_gl_shader"],
 			"showOutput": "always",
 			"suppressTaskName": true
 		},
