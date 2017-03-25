@@ -32,9 +32,17 @@ test_gl_buffer: $(TEST_DIR)gl/buffer.cpp $(INCLUDE_DIR)gl/buffer.h $(TEST_BIN_DI
 test_gl_shader: $(TEST_DIR)gl/shader.cpp $(INCLUDE_DIR)gl/shader.h $(TEST_BIN_DIR)
 	$(CC) $(FLAGS) -I$(INCLUDE_DIR) $(LIBS) -o $(TEST_BIN_DIR)$@ $<
 
-all_gl_tests: test_gl_context test_gl_textures test_gl_framebuffers test_gl_buffer test_gl_shader
+test_parameterset: $(TEST_DIR)structures/parameterset.cpp $(INCLUDE_DIR)structures/parameterset.h $(TEST_BIN_DIR)
+	$(CC) $(FLAGS) -I$(INCLUDE_DIR) $(LIBS) -o $(TEST_BIN_DIR)$@ $<
 
-all_tests: all_gl_tests test_png_io
+test_bounds: $(TEST_DIR)structures/bounds.cpp $(INCLUDE_DIR)structures/bounds.h $(TEST_BIN_DIR)
+	$(CC) $(FLAGS) -I$(INCLUDE_DIR) $(LIBS) -o $(TEST_BIN_DIR)$@ $<
+
+all_gl_tests: test_gl_context test_gl_textures test_gl_framebuffers test_gl_buffer test_gl_shader
+all_io_tests: test_png_io
+all_structests: test_parameterset test_bounds
+
+all_tests: all_gl_tests all_io_tests all_structests
 
 all: all_tests
 
