@@ -44,11 +44,18 @@ test_callback: $(TEST_DIR)structures/callback.cpp $(INCLUDE_DIR)structures/callb
 test_callbackset: $(TEST_DIR)structures/callbackset.cpp $(INCLUDE_DIR)structures/callbackset.h $(TEST_BIN_DIR)
 	$(CC) $(FLAGS) -I$(INCLUDE_DIR) $(LIBS) -o $(TEST_BIN_DIR)$@ $<
 
+test_mutable_tokens: $(TEST_DIR)mutables/tokens.cpp $(INCLUDE_DIR)mutables/tokens.h $(TEST_BIN_DIR)
+	$(CC) $(FLAGS) -I$(INCLUDE_DIR) $(LIBS) -o $(TEST_BIN_DIR)$@ $<
+
+test_mutable_property: $(TEST_DIR)mutables/property.cpp $(INCLUDE_DIR)mutables/property.h $(TEST_BIN_DIR)
+	$(CC) $(FLAGS) -I$(INCLUDE_DIR) $(LIBS) -o $(TEST_BIN_DIR)$@ $<
+
 all_gl_tests: test_gl_context test_gl_textures test_gl_framebuffers test_gl_buffer test_gl_shader
 all_io_tests: test_png_io
 all_structure_tests: test_parameterset test_bounds test_callback test_callbackset
+all_mutables_tests: test_mutable_tokens test_mutable_property
 
-all_tests: all_gl_tests all_io_tests all_structure_tests
+all_tests: all_gl_tests all_io_tests all_structure_tests all_mutables_tests
 
 all: all_tests
 
