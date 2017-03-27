@@ -38,9 +38,15 @@ test_parameterset: $(TEST_DIR)structures/parameterset.cpp $(INCLUDE_DIR)structur
 test_bounds: $(TEST_DIR)structures/bounds.cpp $(INCLUDE_DIR)structures/bounds.h
 	$(CC) $(FLAGS) -I$(INCLUDE_DIR) $(LIBS) -o $(TEST_BIN_DIR)$@ $<
 
+test_callback: $(TEST_DIR)structures/callback.cpp $(INCLUDE_DIR)structures/callback.h $(TEST_BIN_DIR)
+	$(CC) $(FLAGS) -I$(INCLUDE_DIR) $(LIBS) -o $(TEST_BIN_DIR)$@ $<
+
+test_callbackset: $(TEST_DIR)structures/callbackset.cpp $(INCLUDE_DIR)structures/callbackset.h $(TEST_BIN_DIR)
+	$(CC) $(FLAGS) -I$(INCLUDE_DIR) $(LIBS) -o $(TEST_BIN_DIR)$@ $<
+
 all_gl_tests: test_gl_context test_gl_textures test_gl_framebuffers test_gl_buffer test_gl_shader
 all_io_tests: test_png_io
-all_structure_tests: test_parameterset test_bounds
+all_structure_tests: test_parameterset test_bounds test_callback test_callbackset
 
 all_tests: all_gl_tests all_io_tests all_structure_tests
 
