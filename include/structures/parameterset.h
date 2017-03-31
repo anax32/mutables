@@ -720,7 +720,7 @@ typedef ParameterSet<FloatSetType>		FloatSet;
 typedef ParameterSet<Param>				ParamSet;		// nice name!
 
 
-
+#if 0
 class IntegerSet : public ParameterSet<IntegerSetType>
 {
 public:
@@ -783,6 +783,9 @@ public:
 	}
 #endif
 };
+#else
+typedef ParameterSet<IntegerSetType>	IntegerSet;
+#endif
 
 #if 0
 inline std::ostream& operator<< (std::ostream& os, const IntegerSet& is)

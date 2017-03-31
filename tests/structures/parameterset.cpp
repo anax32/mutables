@@ -208,6 +208,20 @@ void parameterset_c14_iterate_test ()
 		i++;
 	}
 }
+void integerset_inline_create_test ()
+{
+	IntegerSet ps
+	{
+		{"test1", 1},
+		{"test2", 2},
+		{"test3", 3}
+	};
+
+	assert_are_equal (3, ps.parameterCount ());
+	assert_are_equal (1, ps["test1"]);
+	assert_are_equal (2, ps["test2"]);
+	assert_are_equal (3, ps["test3"]);
+}
 
 void structures_parameterset_tests ()
 {
@@ -225,6 +239,8 @@ void structures_parameterset_tests ()
 	TEST(parameterset_iterate_test);
 	TEST(parameterset_iterator_std_funcs_test);
 	TEST(parameterset_c14_iterate_test);
+
+	TEST(integerset_inline_create_test);
 }
 
 int main (int argc, char** argv)

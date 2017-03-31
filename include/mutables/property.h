@@ -1,3 +1,9 @@
+namespace Mutables
+{
+#ifndef PropertySet
+class PropertySet;
+#endif
+
 /**
  * Properties are simply a type-value pair where value is interepretted according to type.
  * Value is always stored as a string encoding, with multiple elements separated by a hash.
@@ -35,7 +41,7 @@ public:
 	//	float	ts;
 		Param	t ("\0");
 
-		if (Token::get (p, index, t) == false)		{Note::notemsg ("Could not get () token\0"); return false;}
+		if (Token::get (p, index, t) == false)		{std::cerr << "Could not get () token" << std::endl; return false;}
 /*
 		if (getMin (ts) == false)	{Note::notemsg ("setMin () {GetMin}\0");}
 		if (ts > newMin)			{Note::notemsg ("MIN FAIL\0");}
@@ -109,12 +115,14 @@ public:
 	Property* operator= (const Property* p)							{this->_type.assign (p->_type);	setValue (p->_value);	return this;}
 	bool operator==(const Property& p) const 						{return ((value () == p.value ()) && (type () == p.type ()));}
 	bool operator!=(const Property& p) const						{return (!((value () == p.value ()) && (type () == p.type ())));}
-	void operator() (void)											{Note::notemsg ("property invoked\0");}
+	void operator() (void)											{std::cout << "property invoked" << std::endl;}
 	/**
 	 * Obtains the "defaultValidator" for this type and tests the input.
 	 * @param testValue, value to validate against this properties type
 	 * @returns true if the value represents the type, false otherwise
 	 */
+#if 0
+// FIXME: restore this
 	bool isValid (const Param testValue)
 	{
 		Validator	*v = NULL;
@@ -130,6 +138,12 @@ public:
 		(*v) ();
 		return v->valid ();
 	}
+#else
+	bool isValid (const Param testValue)
+	{
+		return true;
+	}
+#endif
 	/**
 	 * @returns true if the value is the default value for its type, false otherwise
 	 */
@@ -141,7 +155,7 @@ public:
 	 */
 	void draw (const UI::Bounds& drawRegion) const
 	{
-		Mutables::Drawer	*d;
+		Drawer	*d;
 
 #if 0
 		float	cx[2];
@@ -159,7 +173,7 @@ public:
 
 		if ((descriptionSet[type ()] && "defaultDrawer\0") == false)		{return;}
 
-		d = dynamic_cast<Mutables::Drawer*>(&descriptionSet[type ()]["defaultDrawer\0"]);
+		d = dynamic_cast<Drawer*>(&descriptionSet[type ()]["defaultDrawer\0"]);
 
 		if (d == NULL)						{return;}
 
@@ -181,14 +195,14 @@ public:
 	//	if (contains (descriptionSet[Types::type ()].values (), newType) == false)
 		if ((descriptionSet[Types::type ()].values () && newType) == false)
 		{
-			Note::notemsg ("UNKNOWN type: %s\0", newType.c_str ());
+			std::cout << "UNKNOWN type: '" << newType << "'" << std::endl;
 		}
 #endif
 		setValue (descriptionSet[type ()].defaultValue ());
 		setAccess (descriptionSet[type ()].defaultAccess ());
 	}
 	void setAccess (const Param newAccess)							{_access = newAccess;}
-	void clear ()													{setValue (Mutables::Types::bottom ());}
+	void clear ()													{setValue (Types::bottom ());}
 // STATICS
 	static bool set (Param& propertyString, const float newValue)	{return Token::put (propertyString, 0, newValue);}
 	/**
@@ -217,7 +231,7 @@ public:
 		// set the value
 		if (type () == Types::unknown ())
 		{
-			Note::notemsg ("Unknown mutable type\0");
+			std::cerr << "Unknown mutable type" << std::endl;
 			return false;
 		}
 		else if (type () == Types::label ())		{return setToken (0, newValue);}
@@ -248,7 +262,7 @@ public:
 		else if (type () == Types::statSource ())	{return setToken (0, newValue);}
 		else
 		{
-			Note::notemsg ("mutable type '%s' NIMPL\0", type ().c_str ());
+			std::cerr << "mutable type '" << type () << "' NIMPL" << std::endl;
 			return false;
 		}
 
@@ -283,7 +297,9 @@ public:
 	 * @param rgba array of four float values describing the red green and blue in the range [0..1]
 	 * @return true if the value can be set, false otherwise (where the type () is not COLOUR)
 	 */
+#ifdef COLOUR_UTILS
 	bool set (const float *rgba)									{return ((type () == Types::colour ()) && (set (ColourUtils::float2hex (rgba))));}
+#endif
 #ifdef _WIN32_
 	bool set (COLORREF& ref)
 	{
@@ -343,7 +359,7 @@ public:
 		else if (setToken (GLUtils::SHADER_PROGRAM, shader[GLUtils::SHADER_PROGRAM]) == false)		{return false;}
 		else if (setToken (GLUtils::COMPUTE_SHADER, shader[GLUtils::COMPUTE_SHADER]) == false)		{return false;}
 #else
-		if (type () == Mutables::Types::program ())
+		if (type () == Types::program ())
 		{
 			return ((setToken (GLUtils::VERTEX_SHADER, shader[GLUtils::VERTEX_SHADER])) &&
 					(setToken (GLUtils::GEOMETRY_SHADER, shader[GLUtils::GEOMETRY_SHADER])) &&
@@ -355,8 +371,8 @@ public:
 		return false;
 	}
 #endif
-	bool set (const GLUtils::TextureDescription& texture)			{return ((type () == Mutables::Types::image ()) && (setToken (0, texture.index ()) && setToken (1, texture.type ())));}
-	bool set (const GLUtils::BufferDescription& buffer)				{return ((type () == Mutables::Types::buffer ()) && (setToken (0, buffer.index ())));}
+	bool set (const GLUtils::TextureDescription& texture)			{return ((type () == Types::image ()) && (setToken (0, texture.index ()) && setToken (1, texture.type ())));}
+	bool set (const GLUtils::BufferDescription& buffer)				{return ((type () == Types::buffer ()) && (setToken (0, buffer.index ())));}
 #endif
 // LABEL
 	const bool getLabel (Param& out, const unsigned int tokenIndex = 0) const
@@ -460,6 +476,7 @@ public:
 #endif
 	}
 // COLOUR
+#ifdef COLOUR_UTILS
 	void getColour (float *rgba) const
 	{
 		if (type () == Types::colour ())
@@ -476,6 +493,7 @@ public:
 		blue = rgba[2];
 		alpha = rgba[3];
 	}
+#endif
 #ifdef _WIN32_
 	void getColour (COLORREF& ref) const
 	{
@@ -489,7 +507,9 @@ public:
 	}
 #endif
 	// input must be tokenised
+#ifdef COLOUR_UTILS
 	static void getColour (const Param& p, float *rgba)				{ColourUtils::hex2float (rgba, p);}
+#endif
 // IMAGE
 #ifdef GLUTILS_H
 	static bool getImage (GLUtils::TextureDescription& texture, const Param& p, const unsigned int tokenIndex = 0)
@@ -518,7 +538,7 @@ public:
 #else
 			if ((repositorySet && value ()) == false)		{return false;}
 
-			Mutables::PropertySet&	ps = repositorySet[value ()];
+			PropertySet&	ps = repositorySet[value ()];
 
 			txd = ps["Image\0"].getImage ();
 #endif
@@ -585,7 +605,8 @@ public:
 	}
 #endif
 // PROPERTYSET
-	static bool getPropertySet (Mutables::PropertySet **ps, const Param& p, const unsigned int tokenIndex = 0)
+
+	static bool getPropertySet (PropertySet **ps, const Param& p, const unsigned int tokenIndex = 0)
 	{
 		Param	lbl ("\0");
 
@@ -594,9 +615,10 @@ public:
 			return false;
 		}
 
+#ifdef repositorySet
 		if ((repositorySet && lbl) == false)
 		{
-			Note::notemsg ("no property set for '%s'\0", lbl.c_str ());
+			std::cout << "no property set for '" << lbl << "'" << std::endl;
 #ifdef _DEBUG
 			assert (0);
 #endif
@@ -604,11 +626,12 @@ public:
 		}
 
 		*ps = &repositorySet[lbl];
+#endif
 
 		return true;
 	}
-	bool getPropertySet (Mutables::PropertySet **ps) const			{return getPropertySet (ps, value ());}
-	bool getPropertySet (Mutables::PropertySet **ps)				{return getPropertySet (ps, value ());}
+	bool getPropertySet (PropertySet **ps) const					{return getPropertySet (ps, value ());}
+	bool getPropertySet (PropertySet **ps)							{return getPropertySet (ps, value ());}
 	PropertySet& ps ()												{PropertySet	*ps;	getPropertySet (&ps);	return (*ps);}
 	const PropertySet& ps () const									{PropertySet	*ps;	getPropertySet (&ps);	return (*ps);}
 // RANGE
@@ -868,8 +891,11 @@ public:
 
 		return false;	// should not be reached...
 	}
+};
+
+#if 0
 // STREAM IO
-	friend std::ostream& operator<< (std::ostream& os, const Property& mp)
+	friend std::ostream& operator<< (std::ostream& os, const Mutables::Property& mp)
 	{
 	//	Patterns::Persistable::pushParameter<Property>(os, "type\0", mp.type ().c_str ());
 	//	Patterns::Persistable::pushParameter<Property>(os, "value\0", mp.value ().c_str ());
@@ -877,7 +903,7 @@ public:
 		Patterns::Persistable::writeXMLAttributeValuePair (os, "value\0", mp.value ().c_str ());
 		return os;
 	}
-	friend std::istream& operator>> (std::istream& is, Property& mp)
+	friend std::istream& operator>> (std::istream& is, Mutables::Property& mp)
 	{
 		std::string		t, tv, v, vv;
 
@@ -905,4 +931,5 @@ public:
 		// return
 		return is;
 	}
+#endif
 };

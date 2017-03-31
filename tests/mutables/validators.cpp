@@ -6,26 +6,21 @@
 
 #include "mutables/types.h"
 #include "mutables/tokens.h"
-//#include "mutables/propertyset.h"
 #include "mutables/description.h"
-#include "mutables/property.h"
 
 #include "mutables/validators.h"
-#include "mutables/descriptionset.h"
 
-#include "../tests.h"
-
-void property_create_test ()
+void validators_create_test ()
 {
 	auto p = Mutables::Property ();
 }
 
-void mutables_property_tests ()
+void mutables_validators_tests ()
 {
-	TEST(property_create_test);
+	TEST(validators_create_test);
 }
 
 int main (int argc, char** argv)
 {
-	TEST_GROUP(mutables_property_tests);
+	TEST_GROUP(mutables_validators_tests);
 }
