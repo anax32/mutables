@@ -298,7 +298,8 @@ protected:
 #endif
   }
 public:
-  DescriptionSet ();
+  DescriptionSet ()
+  {}
 };
 
 // global storage

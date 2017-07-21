@@ -7,10 +7,11 @@
 #include "mutables/types.h"
 #include "mutables/tokens.h"
 #include "mutables/description.h"
+#include "mutables/property.h"
 
 #include "mutables/validators.h"
 
-#include "../../test/test.h"
+#include "../../test/tests.h"
 
 void validators_create_test ()
 {
