@@ -8,17 +8,19 @@
 #include "mutables/propertyset.h"
 #include "mutables/property.h"
 
+#include "../../test/test.h"
+
 void mutables_create_test ()
 {
-	auto p = Mutables::PropertySet::create("test");
+  auto p = Mutables::PropertySet::create("test");
 }
 
 void mutables_propertyset_tests ()
 {
-	TEST(mutables_create_test);
+  TEST(mutables_create_test);
 }
 
 int main (int argc, char** argv)
 {
-	TEST_GROUP(mutables_propertyset_tests);
+  TEST_GROUP(mutables_propertyset_tests);
 }
