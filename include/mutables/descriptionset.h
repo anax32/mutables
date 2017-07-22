@@ -7,7 +7,52 @@ namespace Mutables
  * FIXME: do not acces member variables of the descriptions.
  * FIXME: create proper validators for each type, ideally based on regular expressions
  *      which can parse the new input string.
+ * FIXME: there is a really nasty circular dependency between this and the validators,
  */
+
+/**
+ * FIXME: This is here because the validators rely on a static instance
+ * of a DescriptionSet.
+ * We don't want it here, we don't want this dependency to exist.
+ */
+class DescriptionSet : public ParameterSet<Description>
+{
+protected:
+  void set (const Param& type,
+        const Param& displayName,
+        const Param& description,
+        const Param& defaultValue,
+        const Param& defaultAccess)
+  {
+#if 0
+    // this causes a problem because descriptions contain a pointer,
+    // creating them willy-nilly like this means pointer-subjects can't be
+    // deleted in the class destructor and must be managed elsewhere. avoid.
+    Description  d;
+
+    d.displayName = displayName;
+    d.description = description;
+    d.defaultValue = defaultValue;
+    d.defaultValidator = defaultValidator;
+
+    ParameterSet::set (type, d);
+#else
+    //(*this)[type].dispname = displayName;
+    //(*this)[type].descrip = description;
+    //(*this)[type].defval= defaultValue;
+    //(*this)[type].vld = defaultValidator;
+
+    (*this)[type].set (displayName, description, defaultValue, defaultAccess);
+#endif
+  }
+public:
+  DescriptionSet ();
+};
+
+// global storage
+// FIXME: make a singleton or something, we definitely want to call a function to access it
+DescriptionSet  descriptionSet;
+
 DescriptionSet::DescriptionSet ()
 {
 #ifdef MUTABLES_VERBOSE

@@ -8,6 +8,8 @@
 #include "mutables/propertyset.h"
 #include "mutables/property.h"
 
+#include "maketest.h"
+
 void mutables_create_test ()
 {
 	auto p = Mutables::PropertySet::create("test");

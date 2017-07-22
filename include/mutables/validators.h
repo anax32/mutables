@@ -94,7 +94,7 @@ class VLD_Numeric : public Validator
     virtual void operator() (void)
     {
       float v;
-      setResult (Property::getNumber (v, value ()));
+      setResult (Mutables::Property::getNumber (v, value ()));
     }
 };
 class VLD_Numeric_Pos : public Validator
@@ -103,7 +103,7 @@ class VLD_Numeric_Pos : public Validator
     virtual void operator() (void)
     {
       float v;
-      setResult (Property::getNumber (v, value ()) &&
+      setResult (Mutables::Property::getNumber (v, value ()) &&
                  (v > 0.0f - std::numeric_limits<float>::epsilon ()));
     }
 };
@@ -113,7 +113,7 @@ class VLD_Numeric_Neg : public Validator
     virtual void operator() (void)
     {
       float v;
-      setResult (Property::getNumber (v, value ()) &&
+      setResult (Mutables::Property::getNumber (v, value ()) &&
                  (v < 0.0f));
     }
 };
@@ -123,7 +123,7 @@ class VLD_Numeric_Unit : public Validator
     virtual void operator() (void)
     {
       float  v;
-      setResult (Property::getNumber (v, value (), 0) &&
+      setResult (Mutables::Property::getNumber (v, value (), 0) &&
                  (v > 0.0f - std::numeric_limits<float>::epsilon ()) &&
                  (v < 1.0f + std::numeric_limits<float>::min ()));
     }
@@ -151,7 +151,7 @@ public:
 #ifdef __GL_H__
     GLUtils::TextureDescription  txd;
 
-    setResult (Property::getImage (txd, value ()));
+    setResult (Mutables::Property::getImage (txd, value ()));
     setResult (glIsTexture (txd.index ()) == GL_TRUE);
 #endif
   }
@@ -164,7 +164,7 @@ public:
 #ifdef __GL_H__
     GLUtils::BufferDescription  buf;
 
-    setResult (Property::getBuffer (buf, value ()));
+    setResult (Mutables::Property::getBuffer (buf, value ()));
     setResult (glIsBuffer (buf.index ()) == GL_TRUE);
 #endif
   }
@@ -175,8 +175,8 @@ class VLD_Range : public Validator
     virtual void operator() (void)
     {
       float  v;
-      setResult (Property::getNumber (v, value (), 0) &&
-                 Property::getNumber (v, value (), 1));
+      setResult (Mutables::Property::getNumber (v, value (), 0) &&
+                 Mutables::Property::getNumber (v, value (), 1));
     }
 };
 /**
@@ -189,14 +189,27 @@ protected:
   const PropertySet&  ps;
 
 public:
-  VLD_IsInputAttribute (const PropertySet& propertySet)
+  VLD_IsInputAttribute (const Mutables::PropertySet& propertySet)
     : ps (propertySet)
   {}
   void operator() (void)
   {
-    if (value () == "?\0")              {setResult (false); return;}
-    if ((ps && "Input\0") == false)          {setResult (false); return;}
-    if (ps["Input\0"].getAttribute () != value ())  {setResult (false); return;}
+    if (value () == "?\0")
+    {
+      setResult (false);
+      return;
+    }
+    // FIXME: restore
+    //if ((ps && "Input\0") == false)
+    //{
+    //  setResult (false);
+    //  return;
+    //}
+    //if (ps["Input\0"].getAttribute () != value ())
+    //{
+    //  setResult (false);
+    //  return;
+    //}
 
     setResult (true);
     return;

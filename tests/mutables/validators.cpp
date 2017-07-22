@@ -8,7 +8,10 @@
 #include "mutables/tokens.h"
 #include "mutables/description.h"
 
+#include "mutables/property.h"
 #include "mutables/validators.h"
+
+#include "maketest.h"
 
 void validators_create_test ()
 {

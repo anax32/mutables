@@ -4,7 +4,7 @@
 #define TOK_FNCS
 #include "mutables/tokens.h"
 
-#include "../tests.h"
+#include "maketest.h"
 
 void tokens_get_single_token_test ()
 {

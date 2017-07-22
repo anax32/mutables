@@ -7,7 +7,14 @@
 #include "mutables/types.h"
 #include "mutables/description.h"
 
-#include "../tests.h"
+#include "mutables/tokens.h"
+#include "mutables/property.h"
+#include "mutables/validators.h"
+#include "mutables/drawers.h"
+#include "mutables/mutators.h"
+#include "mutables/descriptionset.h"
+
+#include "maketest.h"
 
 void description_create_test ()
 {

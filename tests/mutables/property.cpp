@@ -13,7 +13,7 @@
 #include "mutables/validators.h"
 #include "mutables/descriptionset.h"
 
-#include "../tests.h"
+#include "maketest.h"
 
 void property_create_test ()
 {

@@ -1,3 +1,5 @@
+namespace Mutables
+{
 /**
  * DRAWERS
  */
@@ -255,8 +257,8 @@ public:
       {
         userRange.setRegion (drawRegion.left (),
                              drawRegion.right (),
-                             drawRegion.bottom () - (drawRegion.height () * (brng[1] - mn[0])/(mx[1]-mn[0])));
-                             drawRegion.bottom () - (drawRegion.height () * (brng[0] - mn[0])/(mx[1]-mn[0])),
+                             drawRegion.bottom () - (drawRegion.height () * (brng[1] - mn[0])/(mx[1]-mn[0])),
+                             drawRegion.bottom () - (drawRegion.height () * (brng[0] - mn[0])/(mx[1]-mn[0])));
         dataRange.setRegion (drawRegion.left (),
                              drawRegion.bottom () - (drawRegion.height () * (frng[0] - mn[0])/(mx[1]-mn[0])),
                              drawRegion.right (),
@@ -736,4 +738,6 @@ public:
 #endif
     setReturnValue (TRUE);
   }
+};
+
 };

@@ -1,3 +1,5 @@
+namespace Mutables
+{
 /**
  * MUTATORS
  */
@@ -269,4 +271,6 @@ public:
       Property::set (val, o);
     }
   }
+};
+
 };
