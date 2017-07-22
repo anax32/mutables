@@ -7,6 +7,7 @@
 #include "mutables/types.h"
 #include "mutables/tokens.h"
 #include "mutables/description.h"
+#include "mutables/property.h"
 
 #include "mutables/property.h"
 #include "mutables/validators.h"
@@ -15,15 +16,15 @@
 
 void validators_create_test ()
 {
-	auto p = Mutables::Property ();
+  auto p = Mutables::Property ();
 }
 
 void mutables_validators_tests ()
 {
-	TEST(validators_create_test);
+  TEST(validators_create_test);
 }
 
 int main (int argc, char** argv)
 {
-	TEST_GROUP(mutables_validators_tests);
+  TEST_GROUP(mutables_validators_tests);
 }

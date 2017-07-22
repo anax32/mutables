@@ -13,7 +13,7 @@ class PropertySet;
  *      would be more extensible.
  */
 class Property : public Utils::Callback,
-         public Patterns::Touch
+                 public Patterns::Touch
 {
 public:
   // UTILITY FUNCTIONS
