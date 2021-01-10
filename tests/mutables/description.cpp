@@ -4,15 +4,21 @@
 #include "structures/callbackset.h"
 #include "structures/bounds.h"
 
+namespace Mutables {
 #include "mutables/types.h"
-#include "mutables/description.h"
+#include "mutables/description/drawer.h"
+#include "mutables/description/validator.h"
+#include "mutables/description/mutator.h"
+#include "mutables/description/binder.h"
+#include "mutables/description/description.h"
+};
 
 #include "mutables/tokens.h"
 #include "mutables/property.h"
-#include "mutables/validators.h"
-#include "mutables/drawers.h"
-#include "mutables/mutators.h"
-#include "mutables/descriptionset.h"
+//#include "mutables/validators.h"
+//#include "mutables/drawers.h"
+//#include "mutables/mutators.h"
+//#include "mutables/descriptionset.h"
 
 #include "maketest.h"
 

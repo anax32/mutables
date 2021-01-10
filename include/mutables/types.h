@@ -2,8 +2,6 @@
  * Basic properties of mutables.
  *  Always string representation.
  */
-namespace Mutables
-{
 static std::locale  languageLocale;  ///< Locale for some string functions
 
 const Param  UNSET ("?\0");
@@ -217,5 +215,4 @@ public:
     if ((idx > 0) && (idx < count ()))    {return AccessTypeNames[idx];}
     else                  {return AccessTypeNames[0];}
   }
-};
 };
