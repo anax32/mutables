@@ -1,5 +1,3 @@
-namespace Mutables
-{
 /**
  * DESCRIPTION SET
  *  holds all the validators, nice names and descriptions for the mutable types.
@@ -320,5 +318,3 @@ DescriptionSet::DescriptionSet ()
   (*this)[Types::statSource ()].set ("next\0", new Mutables::MUT_ValueSet_Next (Types::statSource ()));
   (*this)[Types::statSource ()].set ("prev\0", new Mutables::MUT_ValueSet_Prev (Types::statSource ()));
 }
-
-};
